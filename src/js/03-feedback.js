@@ -1,4 +1,5 @@
 import throttle from 'lodash/throttle';
+import { isEmpty } from 'lodash';
 
 const form = document.querySelector('.feedback-form');
 const emailInput = form.querySelector('input[name="email"]');
@@ -29,18 +30,29 @@ function clearFormState() {
 
 const throttledSaveFormState = throttle(saveFormState, 500);
 
+function validateForm() {
+  if (isEmpty(emailInput.value) || isEmpty(messageTextarea.value)) {
+    alert("Please fill in all the fields before submitting.");
+    return false;
+  }
+  return true;
+}
+
 form.addEventListener('input', () => {
   throttledSaveFormState();
 });
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
-  const formData = {
-    email: emailInput.value,
-    message: messageTextarea.value,
-  };
-  console.log('Form data:', formData);
-  clearFormState();
+
+  if (validateForm()) {
+    const formData = {
+      email: emailInput.value,
+      message: messageTextarea.value,
+    };
+    console.log('Form data:', formData);
+    clearFormState();
+  }
 });
 
 window.addEventListener('load', () => {
